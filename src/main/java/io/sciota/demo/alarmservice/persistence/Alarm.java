@@ -2,6 +2,7 @@ package io.sciota.demo.alarmservice.persistence;
 
 import org.springframework.lang.NonNull;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,6 +37,10 @@ public class Alarm {
 
     @NonNull
     private String reason;
+
+    @NonNull
+    @Column(columnDefinition = "boolean default false")
+    private boolean acknowledged;
 
     @Override
     public String toString() {
