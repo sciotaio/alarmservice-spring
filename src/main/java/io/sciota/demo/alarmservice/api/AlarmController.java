@@ -42,8 +42,8 @@ public class AlarmController {
 	@GetMapping("/rooms")
 	public List<RoomDto> getRooms() {
 		return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
-			.map(DtoMapper::from)
-			.collect(Collectors.toList());
+				.map(DtoMapper::from)
+				.collect(Collectors.toList());
 	}
 
 	@GetMapping("/schedules")
@@ -63,6 +63,20 @@ public class AlarmController {
 				.collect(Collectors.toList());
 
 		return res;
+	}
+
+	@PostMapping("/schedules")
+	public ResponseEntity<String> postSchedule(@RequestBody ScheduleDto dto) {
+		var room = roomRepository.findById(dto.roomId);
+		if (!room.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+					String.format("room with id '%d' does not exist.", dto.roomId));
+		}
+		
+		// insert in DB
+		scheduleRepository.save(DtoMapper.from(dto, room.get()));
+		
+		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
 	@GetMapping("/alarms")

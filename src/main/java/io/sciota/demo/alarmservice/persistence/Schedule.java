@@ -32,7 +32,7 @@ public class Schedule {
     private int beginMinsOfDay;
 
     @NonNull
-    private int endMindOfDay;
+    private int endMinsOfDay;
 
     @NonNull
     private int activeDaysOfWeekMask;
@@ -41,7 +41,7 @@ public class Schedule {
     public String toString() {
         return String.format(
                 "ArmSchedule[id=%d, begin='%s', end='%s', room='%s']",
-                id, beginMinsOfDay, endMindOfDay, activeDaysOfWeekMask, room);
+                id, beginMinsOfDay, endMinsOfDay, activeDaysOfWeekMask, room);
     }
 
 }

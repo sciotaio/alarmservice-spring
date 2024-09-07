@@ -12,8 +12,17 @@ public class DtoMapper {
         ScheduleDto sched = new ScheduleDto();
         sched.roomId = dbSched.getRoom().getId();
         sched.begin = dbSched.getBeginMinsOfDay();
-        sched.end = dbSched.getEndMindOfDay();
+        sched.end = dbSched.getEndMinsOfDay();
         sched.days_of_week_mask = dbSched.getActiveDaysOfWeekMask();
+        return sched;
+    }
+
+    public static Schedule from(ScheduleDto dto, Room room) {
+        Schedule sched = new Schedule();
+        sched.setRoom(room);
+        sched.setBeginMinsOfDay(dto.begin);
+        sched.setEndMinsOfDay(dto.end);
+        sched.setActiveDaysOfWeekMask(dto.days_of_week_mask);
         return sched;
     }
 
@@ -32,7 +41,7 @@ public class DtoMapper {
         alarm.setRoom(room);
         alarm.setReason(dto.reason);
         alarm.setTimestamp(dto.timestamp);
-        alarm.setAcknowledged(dto.acknowledged);
+        alarm.setAcknowledged(dto.acknowledged == null ? false : dto.acknowledged);
         return alarm;
     }
 
