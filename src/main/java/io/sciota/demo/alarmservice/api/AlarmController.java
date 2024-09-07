@@ -47,12 +47,24 @@ public class AlarmController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					String.format("room with id '%d' does not exist.", roomId));
 		}
-		return alarmRepository.findByRoom("" + roomId);
+		return alarmRepository.findByRoomId(roomId);
 	}
 
 	@PostMapping("/alarms")
-	public String postAlarm(@RequestBody Alarm alarm) {
-		return "todo!";
+	public HttpStatus postAlarm(@RequestBody AlarmDto alarm) {
+		var room = roomRepository.findById(alarm.roomId);
+		if (!room.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+					String.format("room with id '%d' does not exist.", alarm.roomId));
+		}
+
+		Alarm _new = new Alarm();
+		_new.setReason(alarm.reason);
+		_new.setTimestamp(alarm.timestamp);
+		_new.setRoom(room.get());
+		alarmRepository.save(_new);
+
+		return HttpStatus.CREATED;
 	}
 
 }

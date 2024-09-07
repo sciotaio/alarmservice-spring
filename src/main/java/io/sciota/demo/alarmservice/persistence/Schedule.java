@@ -6,6 +6,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -16,19 +18,30 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class Room {
+public class Schedule {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
     @NonNull
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+    
+    @NonNull
+    private int beginMinsOfDay;
+
+    @NonNull
+    private int endMindOfDay;
+
+    @NonNull
+    private int activeDaysOfWeekMask;
 
     @Override
     public String toString() {
         return String.format(
-                "Room[id=%d, name='%s']",
-                id, name);
+                "ArmSchedule[id=%d, begin='%s', end='%s', room='%s']",
+                id, beginMinsOfDay, endMindOfDay, activeDaysOfWeekMask, room);
     }
 
 }

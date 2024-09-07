@@ -8,7 +8,9 @@ public interface AlarmRepository extends CrudRepository<Alarm, Long> {
 
     List<Alarm> findByReason(String reason);
 
-    List<Alarm> findByRoom(String room);
+    List<Alarm> findByRoomName(String roomName);
+    
+    List<Alarm> findByRoomId(Long roomId);
 
     Alarm findById(long id);
 }
