@@ -10,6 +10,7 @@ import io.sciota.demo.alarmservice.persistence.Schedule;
 public class DtoMapper {
     public static ScheduleDto from(Schedule dbSched) {
         ScheduleDto sched = new ScheduleDto();
+        sched.scheduleId = dbSched.getId();
         sched.roomId = dbSched.getRoom().getId();
         sched.begin = dbSched.getBeginMinsOfDay();
         sched.end = dbSched.getEndMinsOfDay();

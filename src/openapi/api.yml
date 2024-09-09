@@ -1,0 +1,60 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: TNT
+ 
+paths:
+  /hello:
+    get:
+      summary: A healthcheck endpoint
+      responses:
+        "200":
+          description: OK
+
+components:
+  schemas:
+    Alarm:
+      type: object
+      properties:
+        reason:
+          type: string
+        acknowledged:
+          type: boolean
+        timestamp:
+          type: string
+          format: date
+        alarmId: 
+          type: integer
+          format: int64
+        roomId: 
+          type: integer
+          format: int64
+    
+    Schedule:
+      type: object
+      properties:
+        begin:
+          type: integer
+          minimum: 0
+          maximum: 1439
+        end:
+          type: integer
+          minimum: 0
+          maximum: 1439
+        dys_of_week_mask:
+          type: integer
+        roomId: 
+          type: integer
+          format: int64
+    
+    Room:
+      type: object
+      properties:
+        roomId: 
+          type: integer
+          format: int64
+        name: 
+          type: string
+      required:
+        - message
+

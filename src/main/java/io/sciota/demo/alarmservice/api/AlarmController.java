@@ -8,6 +8,7 @@ import java.util.stream.StreamSupport;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,14 +40,14 @@ public class AlarmController {
 		return "Ok #" + counter.getAndIncrement() + " from '" + name + "'";
 	}
 
-	@GetMapping("/rooms")
+	@GetMapping("/room")
 	public List<RoomDto> getRooms() {
 		return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
 				.map(DtoMapper::from)
 				.collect(Collectors.toList());
 	}
 
-	@GetMapping("/schedules")
+	@GetMapping("/schedule")
 	public List<ScheduleDto> getSchedules(@RequestParam(value = "roomId", required = true) long roomId) {
 		if (!scheduleRepository.existsById(roomId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -65,7 +66,7 @@ public class AlarmController {
 		return res;
 	}
 
-	@PostMapping("/schedules")
+	@PostMapping("/schedule")
 	public ResponseEntity<String> postSchedule(@RequestBody ScheduleDto dto) {
 		var room = roomRepository.findById(dto.roomId);
 		if (!room.isPresent()) {
@@ -79,7 +80,7 @@ public class AlarmController {
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
-	@GetMapping("/alarms")
+	@GetMapping("/alarm")
 	public List<AlarmDto> getAlarms(@RequestParam(value = "roomId", required = true) long roomId) {
 		if (!roomRepository.existsById(roomId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -91,7 +92,7 @@ public class AlarmController {
 				.toList();
 	}
 
-	@PostMapping("/alarms")
+	@PostMapping("/alarm")
 	public ResponseEntity<String> postAlarm(@RequestBody AlarmDto alarm) {
 		var room = roomRepository.findById(alarm.roomId);
 		if (!room.isPresent()) {
@@ -101,6 +102,20 @@ public class AlarmController {
 
 		alarmRepository.save(DtoMapper.from(alarm, room.get()));
 
+		return new ResponseEntity<String>(HttpStatus.CREATED);
+	}
+
+	@PostMapping("/alarm/{id}/acknowledge")
+	public ResponseEntity<String> postAlarm(@PathVariable Long id) {
+		var alarm = alarmRepository.findById(id);
+		if (!alarm.isPresent()) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+					String.format("alarm with id '%d' does not exist.", id));
+		}
+		
+		var _alarm = alarm.get();
+		_alarm.setAcknowledged(true);
+		alarmRepository.save(_alarm);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
