@@ -3,6 +3,7 @@ package io.sciota.demo.alarmservice.mapper;
 import io.sciota.demo.alarmservice.api.AlarmDto;
 import io.sciota.demo.alarmservice.api.RoomDto;
 import io.sciota.demo.alarmservice.api.ScheduleDto;
+import io.sciota.demo.alarmservice.dtos.EventDto;
 import io.sciota.demo.alarmservice.persistence.Alarm;
 import io.sciota.demo.alarmservice.persistence.Room;
 import io.sciota.demo.alarmservice.persistence.Schedule;
@@ -18,9 +19,9 @@ public class DtoMapper {
         return sched;
     }
 
-    public static Schedule from(ScheduleDto dto, Room room) {
+    public static Schedule from(ScheduleDto dto, Room dbRoom) {
         Schedule sched = new Schedule();
-        sched.setRoom(room);
+        sched.setRoom(dbRoom);
         sched.setBeginMinsOfDay(dto.begin);
         sched.setEndMinsOfDay(dto.end);
         sched.setActiveDaysOfWeekMask(dto.days_of_week_mask);
@@ -51,6 +52,17 @@ public class DtoMapper {
         room.id = dbRoom.getId();
         room.name = dbRoom.getName();
         return room;
+    }
+
+    public static Alarm from(EventDto event, Room dbRoom) {
+        Alarm alarm = new Alarm();
+        alarm.setAcknowledged(false);
+        alarm.setRoom(dbRoom);
+        alarm.setReason(event.getEventType());
+
+        alarm.setTimestamp(DateUtils.asDate(event.getTimestamp()));
+
+        return alarm;
     }
 
 }

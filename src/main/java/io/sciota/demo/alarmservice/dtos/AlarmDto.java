@@ -5,7 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.openapitools.jackson.nullable.JsonNullable;
 import java.time.OffsetDateTime;
@@ -22,15 +22,15 @@ import javax.annotation.Generated;
  */
 
 @JsonTypeName("Alarm")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T09:59:29.138108700+02:00[Europe/Berlin]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T10:58:16.209102800+02:00[Europe/Berlin]")
 public class AlarmDto {
 
   private String reason;
 
   private Boolean acknowledged;
 
-  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-  private LocalDate timestamp;
+  @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+  private OffsetDateTime timestamp;
 
   private Long alarmId;
 
@@ -76,7 +76,7 @@ public class AlarmDto {
     this.acknowledged = acknowledged;
   }
 
-  public AlarmDto timestamp(LocalDate timestamp) {
+  public AlarmDto timestamp(OffsetDateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -88,11 +88,11 @@ public class AlarmDto {
   @Valid 
   @Schema(name = "timestamp", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
   @JsonProperty("timestamp")
-  public LocalDate getTimestamp() {
+  public OffsetDateTime getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(LocalDate timestamp) {
+  public void setTimestamp(OffsetDateTime timestamp) {
     this.timestamp = timestamp;
   }
 

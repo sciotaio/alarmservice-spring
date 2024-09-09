@@ -13,6 +13,19 @@ paths:
 
 components:
   schemas:
+    
+    Event:
+      type: object
+      properties:
+        eventType:
+          type: string
+        roomId: 
+          type: integer
+          format: int64
+        timestamp:
+          type: string
+          format: date-time
+
     Alarm:
       type: object
       properties:
@@ -22,7 +35,7 @@ components:
           type: boolean
         timestamp:
           type: string
-          format: date
+          format: date-time
         alarmId: 
           type: integer
           format: int64

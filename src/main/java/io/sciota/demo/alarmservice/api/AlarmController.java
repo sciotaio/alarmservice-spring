@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import io.sciota.demo.alarmservice.dtos.EventDto;
 import io.sciota.demo.alarmservice.mapper.DtoMapper;
+import io.sciota.demo.alarmservice.persistence.Alarm;
 import io.sciota.demo.alarmservice.persistence.AlarmRepository;
 import io.sciota.demo.alarmservice.persistence.RoomRepository;
 import io.sciota.demo.alarmservice.persistence.ScheduleRepository;
@@ -73,10 +75,10 @@ public class AlarmController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					String.format("room with id '%d' does not exist.", dto.roomId));
 		}
-		
+
 		// insert in DB
 		scheduleRepository.save(DtoMapper.from(dto, room.get()));
-		
+
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
@@ -86,21 +88,36 @@ public class AlarmController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					String.format("room with id '%d' does not exist.", roomId));
 		}
+
 		return alarmRepository.findByRoomId(roomId)
 				.stream()
 				.map(DtoMapper::from)
 				.toList();
 	}
 
-	@PostMapping("/alarm")
-	public ResponseEntity<String> postAlarm(@RequestBody AlarmDto alarm) {
-		var room = roomRepository.findById(alarm.roomId);
+	// @PostMapping("/alarm")
+	// public ResponseEntity<String> postAlarm(@RequestBody AlarmDto alarm) {
+	// var room = roomRepository.findById(alarm.roomId);
+	// if (!room.isPresent()) {
+	// throw new ResponseStatusException(HttpStatus.NOT_FOUND,
+	// String.format("room with id '%d' does not exist.", alarm.roomId));
+	// }
+	//
+	// alarmRepository.save(DtoMapper.from(alarm, room.get()));
+	//
+	// return new ResponseEntity<String>(HttpStatus.CREATED);
+	// }
+
+	@PostMapping("/event")
+	public ResponseEntity<String> postAlarm(@RequestBody EventDto event) {
+		var room = roomRepository.findById(event.getRoomId());
 		if (!room.isPresent()) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					String.format("room with id '%d' does not exist.", alarm.roomId));
+					String.format("room with id '%d' does not exist.", event.getRoomId()));
 		}
 
-		alarmRepository.save(DtoMapper.from(alarm, room.get()));
+		Alarm alarm = DtoMapper.from(event, room.get());
+		alarmRepository.save(alarm);
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
@@ -112,10 +129,11 @@ public class AlarmController {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
 					String.format("alarm with id '%d' does not exist.", id));
 		}
-		
+
 		var _alarm = alarm.get();
 		_alarm.setAcknowledged(true);
 		alarmRepository.save(_alarm);
+
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
 
