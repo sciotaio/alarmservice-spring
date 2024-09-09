@@ -22,7 +22,7 @@ import javax.annotation.Generated;
  */
 
 @JsonTypeName("Event")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T12:23:03.034484500+02:00[Europe/Berlin]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T12:31:25.209519+02:00[Europe/Berlin]")
 public class EventDto {
 
   private String eventType;
@@ -31,6 +31,18 @@ public class EventDto {
 
   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
   private OffsetDateTime timestamp;
+
+  public EventDto() {
+    super();
+  }
+
+  /**
+   * Constructor with only required parameters
+   */
+  public EventDto(String eventType, Long roomId) {
+    this.eventType = eventType;
+    this.roomId = roomId;
+  }
 
   public EventDto eventType(String eventType) {
     this.eventType = eventType;
@@ -41,8 +53,8 @@ public class EventDto {
    * Get eventType
    * @return eventType
   */
-  
-  @Schema(name = "eventType", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull 
+  @Schema(name = "eventType", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("eventType")
   public String getEventType() {
     return eventType;
@@ -61,8 +73,8 @@ public class EventDto {
    * Get roomId
    * @return roomId
   */
-  
-  @Schema(name = "roomId", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @NotNull 
+  @Schema(name = "roomId", requiredMode = Schema.RequiredMode.REQUIRED)
   @JsonProperty("roomId")
   public Long getRoomId() {
     return roomId;

@@ -1,5 +1,8 @@
 package io.sciota.demo.alarmservice.mapper;
 
+import java.time.Instant;
+import java.util.Date;
+
 import io.sciota.demo.alarmservice.api.AlarmDto;
 import io.sciota.demo.alarmservice.api.RoomDto;
 import io.sciota.demo.alarmservice.api.ScheduleDto;
@@ -59,9 +62,8 @@ public class DtoMapper {
         alarm.setAcknowledged(false);
         alarm.setRoom(dbRoom);
         alarm.setReason(event.getEventType());
-
-        alarm.setTimestamp(DateUtils.asDate(event.getTimestamp()));
-
+        // alarm.setTimestamp(DateUtils.asDate(event.getTimestamp()));  // use event timestamp
+        alarm.setTimestamp(Date.from(Instant.now()));  // overwrite timestamp with new alarm creation timestamp
         return alarm;
     }
 

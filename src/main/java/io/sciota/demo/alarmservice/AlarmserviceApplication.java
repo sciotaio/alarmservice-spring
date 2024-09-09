@@ -39,6 +39,7 @@ public class AlarmserviceApplication {
 			var sched = new Schedule();
 			sched.setBeginMinsOfDay(0); // 00:00
 			sched.setEndMinsOfDay(1439); // 23:59
+			sched.setActiveDaysOfWeekMask(0b01111111); // all days of the week
 			sched.setRoom(room_ref); // room_0000
 			scheduleRepository.save(sched);
 			log.info("  --> done.");

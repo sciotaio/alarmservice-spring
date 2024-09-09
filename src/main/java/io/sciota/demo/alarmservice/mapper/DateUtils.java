@@ -1,5 +1,6 @@
 package io.sciota.demo.alarmservice.mapper;
 
+import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,5 +28,13 @@ public class DateUtils {
 
   public static LocalDateTime asLocalDateTime(Date date) {
     return Instant.ofEpochMilli(date.getTime()).atZone(ZoneId.systemDefault()).toLocalDateTime();
+  }
+
+  public static boolean isToday(DayOfWeek day, int dayOfWeekMask) {
+    var ord = DayOfWeek.MONDAY.getValue();
+    if (ord != 1) {
+      throw new RuntimeException("Expecting MONDAY to start have value of '1'");
+    }
+    return (dayOfWeekMask & (0b00000001 << (ord - 1))) > 0;
   }
 }

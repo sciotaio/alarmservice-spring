@@ -1,10 +1,13 @@
 package io.sciota.demo.alarmservice.api;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import io.sciota.demo.alarmservice.dtos.EventDto;
+import io.sciota.demo.alarmservice.mapper.DateUtils;
 import io.sciota.demo.alarmservice.mapper.DtoMapper;
+import io.sciota.demo.alarmservice.mapper.DtoValidation;
 import io.sciota.demo.alarmservice.persistence.Alarm;
 import io.sciota.demo.alarmservice.persistence.AlarmRepository;
 import io.sciota.demo.alarmservice.persistence.RoomRepository;
@@ -25,6 +30,8 @@ import jakarta.annotation.Resource;
 
 @RestController
 public class AlarmController {
+
+	private static final Logger log = LoggerFactory.getLogger(AlarmController.class);
 
 	private final AtomicLong counter = new AtomicLong();
 
@@ -72,8 +79,18 @@ public class AlarmController {
 	public ResponseEntity<String> postSchedule(@RequestBody ScheduleDto dto) {
 		var room = roomRepository.findById(dto.roomId);
 		if (!room.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					String.format("room with id '%d' does not exist.", dto.roomId));
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(String.format("room with id '%d' does not exist.", dto.roomId));
+		}
+
+		// validate
+		try {
+			DtoValidation.validate(dto);
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity
+					.status(HttpStatus.BAD_REQUEST)
+					.body(String.format("Validation failed: %s", e.getMessage()));
 		}
 
 		// insert in DB
@@ -95,29 +112,50 @@ public class AlarmController {
 				.toList();
 	}
 
-	// @PostMapping("/alarm")
-	// public ResponseEntity<String> postAlarm(@RequestBody AlarmDto alarm) {
-	// var room = roomRepository.findById(alarm.roomId);
-	// if (!room.isPresent()) {
-	// throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-	// String.format("room with id '%d' does not exist.", alarm.roomId));
-	// }
-	//
-	// alarmRepository.save(DtoMapper.from(alarm, room.get()));
-	//
-	// return new ResponseEntity<String>(HttpStatus.CREATED);
-	// }
-
 	@PostMapping("/event")
-	public ResponseEntity<String> postAlarm(@RequestBody EventDto event) {
+	public ResponseEntity<String> postEvent(@RequestBody EventDto event) {
 		var room = roomRepository.findById(event.getRoomId());
 		if (!room.isPresent()) {
-			throw new ResponseStatusException(HttpStatus.NOT_FOUND,
-					String.format("room with id '%d' does not exist.", event.getRoomId()));
+			return ResponseEntity
+					.status(HttpStatus.NOT_FOUND)
+					.body(String.format("room with id '%d' does not exist.", event.getRoomId()));
 		}
 
-		Alarm alarm = DtoMapper.from(event, room.get());
-		alarmRepository.save(alarm);
+		if (event.getTimestamp() == null) {
+			event.setTimestamp(OffsetDateTime.now());
+		}
+
+		var date = event.getTimestamp();
+		var mins = date.getHour() * 60 + date.getMinute();
+		var dayOfWeek = event.getTimestamp().getDayOfWeek();
+
+		var schedules = scheduleRepository.findByRoomId(event.getRoomId());
+		var isAlert = StreamSupport.stream(schedules.spliterator(), false).anyMatch((schd) -> {
+			if (DateUtils.isToday(dayOfWeek, schd.getActiveDaysOfWeekMask())) {
+				var begin = schd.getBeginMinsOfDay();
+				var end = schd.getEndMinsOfDay();
+				if (end > begin) {
+					return mins >= begin && mins < end;
+				} else {
+					log.error(String.format("Malformed schedule with id '%d'", schd.getId()));
+				}
+			}
+			return false;
+		});
+
+		if (isAlert) {
+			log.warn(String.format("Event '%s' for room '%d' caused an alert! Saving alert to DB ...",
+					event.getEventType(),
+					event.getRoomId()));
+
+			Alarm alarm = DtoMapper.from(event, room.get());
+			alarmRepository.save(alarm);
+		} else {
+			log.info(String.format("Event '%s' for room '%d' didn't cause an alert.", event.getEventType(),
+					event.getRoomId()));
+		}
+
+		// the event won't be stored anywhere (yet?)
 
 		return new ResponseEntity<String>(HttpStatus.CREATED);
 	}
