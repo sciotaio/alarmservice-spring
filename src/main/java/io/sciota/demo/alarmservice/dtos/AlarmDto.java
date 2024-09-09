@@ -22,7 +22,7 @@ import javax.annotation.Generated;
  */
 
 @JsonTypeName("Alarm")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T10:58:16.209102800+02:00[Europe/Berlin]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T12:23:03.034484500+02:00[Europe/Berlin]")
 public class AlarmDto {
 
   private String reason;

@@ -37,8 +37,8 @@ public class AlarmserviceApplication {
 			log.info("### Inserting schedule(s) ...");
 			var room_ref = roomRepository.findById(1);
 			var sched = new Schedule();
-			sched.setBeginMinsOfDay(0); 	// 00:00
-			sched.setEndMinsOfDay(1439); 	// 23:59
+			sched.setBeginMinsOfDay(0); // 00:00
+			sched.setEndMinsOfDay(1439); // 23:59
 			sched.setRoom(room_ref); // room_0000
 			scheduleRepository.save(sched);
 			log.info("  --> done.");

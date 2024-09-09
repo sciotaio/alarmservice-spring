@@ -20,14 +20,14 @@ import javax.annotation.Generated;
  */
 
 @JsonTypeName("Schedule")
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T10:58:16.209102800+02:00[Europe/Berlin]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2024-09-09T12:23:03.034484500+02:00[Europe/Berlin]")
 public class ScheduleDto {
 
   private Integer begin;
 
   private Integer end;
 
-  private Integer dysOfWeekMask;
+  private Integer daysOfWeekMask;
 
   private Long roomId;
 
@@ -75,24 +75,24 @@ public class ScheduleDto {
     this.end = end;
   }
 
-  public ScheduleDto dysOfWeekMask(Integer dysOfWeekMask) {
-    this.dysOfWeekMask = dysOfWeekMask;
+  public ScheduleDto daysOfWeekMask(Integer daysOfWeekMask) {
+    this.daysOfWeekMask = daysOfWeekMask;
     return this;
   }
 
   /**
-   * Get dysOfWeekMask
-   * @return dysOfWeekMask
+   * Get daysOfWeekMask
+   * @return daysOfWeekMask
   */
   
-  @Schema(name = "dys_of_week_mask", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
-  @JsonProperty("dys_of_week_mask")
-  public Integer getDysOfWeekMask() {
-    return dysOfWeekMask;
+  @Schema(name = "days_of_week_mask", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+  @JsonProperty("days_of_week_mask")
+  public Integer getDaysOfWeekMask() {
+    return daysOfWeekMask;
   }
 
-  public void setDysOfWeekMask(Integer dysOfWeekMask) {
-    this.dysOfWeekMask = dysOfWeekMask;
+  public void setDaysOfWeekMask(Integer daysOfWeekMask) {
+    this.daysOfWeekMask = daysOfWeekMask;
   }
 
   public ScheduleDto roomId(Long roomId) {
@@ -126,13 +126,13 @@ public class ScheduleDto {
     ScheduleDto schedule = (ScheduleDto) o;
     return Objects.equals(this.begin, schedule.begin) &&
         Objects.equals(this.end, schedule.end) &&
-        Objects.equals(this.dysOfWeekMask, schedule.dysOfWeekMask) &&
+        Objects.equals(this.daysOfWeekMask, schedule.daysOfWeekMask) &&
         Objects.equals(this.roomId, schedule.roomId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(begin, end, dysOfWeekMask, roomId);
+    return Objects.hash(begin, end, daysOfWeekMask, roomId);
   }
 
   @Override
@@ -141,7 +141,7 @@ public class ScheduleDto {
     sb.append("class ScheduleDto {\n");
     sb.append("    begin: ").append(toIndentedString(begin)).append("\n");
     sb.append("    end: ").append(toIndentedString(end)).append("\n");
-    sb.append("    dysOfWeekMask: ").append(toIndentedString(dysOfWeekMask)).append("\n");
+    sb.append("    daysOfWeekMask: ").append(toIndentedString(daysOfWeekMask)).append("\n");
     sb.append("    roomId: ").append(toIndentedString(roomId)).append("\n");
     sb.append("}");
     return sb.toString();
