@@ -33,21 +33,21 @@ Our DB holds entries for __Schedules__, __Rooms__ and __Alarms__
 erDiagram
 
     SCHEDULE {
-        int id
-        int roomId
+        int id PK
+        int roomId FK
         int begin
         int end
         int daysOfWeekMask
     }
 
     ROOM {
-        int id
-        string NAME
+        int id PK
+        string name
     }
 
     ALARM {
-        int id
-        int roomId
+        int id PK
+        int roomId FK
         date timestamp
         string reason
         boolean acknowledged
@@ -58,7 +58,7 @@ erDiagram
     
 ```
 
-# Klassendiagramm
+# Class diagramm
 ```mermaid
 classDiagram
     %% Example showing the use of cardinalities
